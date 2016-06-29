@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	<!-- 앞으로 개발하게될 객체는 이 xml에 등록할필요 없게 가자!!
+		설정파일을 간소화하자!!
+		 아래의 태그는 지정된 패키지를 조사하여, 만일스프링에서 이해하는 컴포넌트일경우
+		 메모리에 자동으로 올린다..
+		 dao  : repository
+		 service : service
+		 controller  : controller 
+		 component : 위 3가지의 모든 객체들을 가리키는 용어 
+	 -->
+	<context:component-scan base-package="com.mvc"/>
+	
+	
 	<!-- 파일업로드 설정!! -->
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
@@ -24,19 +39,6 @@
 	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
 		<constructor-arg index="0" ref="sqlSessionFactoryBean" />
 	</bean>
-
-	<bean id="galleryDAOMybatis" class="com.mvc.gallery.model.GalleryDAOMybatis"
-		p:sqlSessionTemplate-ref="sqlSessionTemplate" />
-
-	<bean id="fileManager" class="com.mvc.gallery.model.FileManager" />
-
-	<bean id="galleryService" class="com.mvc.gallery.model.GalleryService"
-		p:galleryDAO-ref="galleryDAOMybatis" 
-		p:fileManager-ref="fileManager"/>
-
-	<!-- 컨트롤러 등록 -->
-	<bean id="galleryController" class="com.mvc.gallery.controller.GalleryController"
-		p:galleryService-ref="galleryService"/>
 
 </beans>
 

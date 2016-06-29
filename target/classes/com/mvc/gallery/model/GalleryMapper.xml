@@ -18,6 +18,9 @@
 	</select>
 
 	<insert id="insert" parameterType="Gallery">
+		<selectKey order="AFTER" keyProperty="gallery_id" resultType="int">
+			select seq_gallery.currval from dual
+		</selectKey>
 		insert into Gallery(gallery_id, title,writer,content)
 		values( seq_gallery.nextval ,#{title},#{writer},#{content})
 	</insert>
