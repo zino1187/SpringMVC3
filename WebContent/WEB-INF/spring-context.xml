@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 파일업로드 설정!! -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
+	<!-- ViewResolver -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		p:prefix="/" p:suffix=".jsp" />
+
+	<!-- 스프링이 커넥션을 얻어오려는 이유는? 트랜잭션을 지배하기 위해... -->
+	<jee:jndi-lookup id="dataSource" jndi-name="jdbc/oracle"
+		resource-ref="true" />
+
+	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean"
+		p:dataSource-ref="dataSource" p:configLocation="classpath:mybatis/config/config.xml" />
+
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactoryBean" />
+	</bean>
+
+	<bean id="galleryDAOMybatis" class="com.mvc.gallery.model.GalleryDAOMybatis"
+		p:sqlSessionTemplate-ref="sqlSessionTemplate" />
+
+	<bean id="fileManager" class="com.mvc.gallery.model.FileManager" />
+
+	<bean id="galleryService" class="com.mvc.gallery.model.GalleryService"
+		p:galleryDAO-ref="galleryDAOMybatis" 
+		p:fileManager-ref="fileManager"/>
+
+	<!-- 컨트롤러 등록 -->
+	<bean id="galleryController" class="com.mvc.gallery.controller.GalleryController"
+		p:galleryService-ref="galleryService"/>
+
+</beans>
+
+
+
+
+
+
+
+
